@@ -1,3 +1,5 @@
+package me.ulysse.iaspirateur.gui;
+
 public class StrongTriangularFuzzyPartition implements StrongFuzzyPartitionEngine {
     private String _name;
     private double[] _modalities;

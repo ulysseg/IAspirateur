@@ -1,3 +1,5 @@
+package me.ulysse.iaspirateur.gui;
+
 public abstract class FuzzyLogicEngine {
     protected StrongFuzzyPartitionEngine[] _FPEs;
     

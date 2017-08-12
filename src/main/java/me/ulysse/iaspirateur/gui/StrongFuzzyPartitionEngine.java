@@ -1,3 +1,5 @@
+package me.ulysse.iaspirateur.gui;
+
 public interface StrongFuzzyPartitionEngine {
     public double[] getDegrees(double input);
     public int size();

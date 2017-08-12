@@ -1,16 +1,10 @@
+package me.ulysse.iaspirateur.gui;
+
 import java.awt.event.*;
 import javax.swing.*;
-import java.io.*;
-/*import java.awt.*;
-import javax.swing.event.*;
-import java.beans.*;
-import java.awt.geom.*;
-import javax.swing.border.*;
-import java.awt.image.BufferedImage;
-import java.lang.*;*/
 
 public class Menu extends JMenuBar implements ActionListener {
-	private Interface _interface;
+	private final Interface _interface;
 	private JMenuItem _exitItem;
 	private JMenuItem _aboutItem;
 	private JMenu _fileMenu;
@@ -21,8 +15,9 @@ public class Menu extends JMenuBar implements ActionListener {
 		return _classLoadMenu;
 	}
 
-	public Menu(Interface interf) {
-		_interface = interf;
+	public Menu(Interface _interface) {
+		this._interface = _interface;
+
 		_fileMenu = new JMenu("Start");
 		_fileMenu.setMnemonic('S');
 

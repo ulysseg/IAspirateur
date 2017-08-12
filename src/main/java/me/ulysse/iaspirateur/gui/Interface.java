@@ -1,3 +1,7 @@
+package me.ulysse.iaspirateur.gui;
+
+import me.ulysse.iaspirateur.ia.Robot;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -6,50 +10,45 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.UIManager;
+import javax.swing.*;
 
-public class Interface implements ClassOpener{
-    protected JFrame                  _frame;
-    private Menu                    _menu;
+import static java.util.Objects.requireNonNull;
+
+// TODO rename GraphicalInterface because confusing
+public class Interface implements ClassOpener {
+    protected JFrame frame;
+    private Menu menu;
     private final JFileChooser      _fileChooser = new JFileChooser(".");
     private Viewport                _viewport;
     private JLabel                  _statusBar;
     private ObjectEngine            _objectEngine;
-    
-    protected WallE w;
-    protected double fitness;
+
+    private final RobotEngine robotEngine;
     protected boolean over;
 
-    public JFrame getFrame() { return _frame; }
-    public Menu getMenu() { return _menu; }
+    public JFrame getFrame() { return frame; }
+    public Menu getMenu() { return menu; }
     public JFileChooser getFileChooser() { return _fileChooser; }
     public Viewport getViewport() { return _viewport; }
     public JLabel getStatusBar() { return _statusBar; }
     public ObjectEngine getObjectEngine() { return _objectEngine; }
 
-    public Interface(WallE w) {
-        String lookAndFeel = null;
-        lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
-        try {
-            UIManager.setLookAndFeel(lookAndFeel);
-        } catch (Exception e) {}
+    // Ugly to pass robot here, but not the point here
+    public Interface(Robot robot) {
+        setCrossPlatformLookAndFeel();
 
-        _menu = new Menu(this);
-        //System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        
+        menu = new Menu(this);
+
         _viewport = new Viewport(this);
         _statusBar = new JLabel("Welcome !");
-        _frame = new JFrame("Module Machine Learning - ObjectEngine");
+        frame = new JFrame("Module Machine Learning - ObjectEngine");
 
-        _frame.addWindowListener(new WindowAdapter() {
+        frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
             }});
 
-        _frame.addKeyListener(new KeyAdapter() {
+        frame.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e)  {
                 ObjectEngine mli = getObjectEngine();
                 if(mli != null)
@@ -71,25 +70,34 @@ public class Interface implements ClassOpener{
 
         // Screen size
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        _frame.setBounds((screenSize.width - (screenSize.width / 2)) / 2,
+        frame.setBounds((screenSize.width - (screenSize.width / 2)) / 2,
                 (screenSize.height - (screenSize.height / 2)) / 2,
                 screenSize.width / 2,
                 screenSize.height / 2);
-//        _frame.setBounds(100, 100, 800, 400);
+//        frame.setBounds(100, 100, 800, 400);
 
-        _frame.setJMenuBar(_menu);
-        _frame.getContentPane().setLayout(new BorderLayout());
-        _frame.getContentPane().add(_viewport, BorderLayout.CENTER);
-        _frame.getContentPane().add(_statusBar, BorderLayout.SOUTH);
-        _frame.setVisible(true);
-        
-        
-        
+        frame.setJMenuBar(menu);
+        frame.getContentPane().setLayout(new BorderLayout());
+        frame.getContentPane().add(_viewport, BorderLayout.CENTER);
+        frame.getContentPane().add(_statusBar, BorderLayout.SOUTH);
+        frame.setVisible(true);
+
         classOpened(new ObjectEngine(), this);
-        this.w = w;
-        _menu.get_classLoadMenu().openClass("RobotEngine.class");
+        robotEngine = new RobotEngine(robot, this);
+        classOpened(robotEngine, this);
+//        menu.get_classLoadMenu().openClass("me.ulysse.iaspirateur.gui.RobotEngine");
     }
 
+    private void setCrossPlatformLookAndFeel() {
+        String lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
+        try {
+            UIManager.setLookAndFeel(lookAndFeel);
+        } catch (ClassNotFoundException | InstantiationException |IllegalAccessException | UnsupportedLookAndFeelException  e) {
+           throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void classOpened(Object object, Object caller) {
     	if(over) {
     		return;
@@ -101,7 +109,7 @@ public class Interface implements ClassOpener{
         //_objectEngine.write();
         _viewport.draw();
         String nom = object.getClass().getName();
-        _frame.setTitle("Module Machine Learning - " + nom);
+        frame.setTitle("Module Machine Learning - " + nom);
         _statusBar.setText("Class " + nom + " loaded");
     }
 
@@ -109,7 +117,11 @@ public class Interface implements ClassOpener{
         _viewport.draw();
     }
 
-//    public static void main(String[] args) {
+    public RobotEngine robotEngine() {
+        return robotEngine;
+    }
+
+    //    public static void main(String[] args) {
 //        javax.swing.SwingUtilities.invokeLater(new Runnable() {
 //            public void run() {
 //                new Interface();

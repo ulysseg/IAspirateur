@@ -1,3 +1,5 @@
+package me.ulysse.iaspirateur.gui;
+
 import java.util.*;
 
 public class FuzzyLogicBasic extends FuzzyLogicEngine {

@@ -1,13 +1,10 @@
+package me.ulysse.iaspirateur.gui;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.image.BufferedImage;
-/*import java.beans.*;
- import java.awt.geom.*;
- import javax.swing.border.*;
- import java.lang.*;
- import java.io.*;*/
 
 public class Viewport extends JViewport {
 	private Interface _interface;
